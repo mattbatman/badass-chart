@@ -5,12 +5,18 @@ import data from '../../data'
 import Axes from '../Axes'
 import Bars from '../Bars'
 import ResponsiveWrapper from '../ResponsiveWrapper'
+import Tooltip from '../Tooltip'
+import './Chart.css'
 
 class Chart extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.xScale = scaleBand()
     this.yScale = scaleLinear()
+
+    this.state = {
+      hoveredBar: null
+    }
   }
 
   render() {
@@ -32,20 +38,31 @@ class Chart extends Component {
       .range([svgDimensions.height - margins.bottom, margins.top])
 
     return (
-      <svg width={svgDimensions.width} height={svgDimensions.height}>
-        <Axes
-          scales={{ xScale, yScale }}
-          margins={margins}
-          svgDimensions={svgDimensions}
-        />
-        <Bars
-          scales={{ xScale, yScale }}
-          margins={margins}
-          data={data}
-          maxValue={maxValue}
-          svgDimensions={svgDimensions}
-        />
-      </svg>
+      <div className="Chart">
+        <svg width={svgDimensions.width} height={svgDimensions.height}>
+          <Axes
+            scales={{ xScale, yScale }}
+            margins={margins}
+            svgDimensions={svgDimensions}
+          />
+          <Bars
+            scales={{ xScale, yScale }}
+            margins={margins}
+            data={data}
+            maxValue={maxValue}
+            svgDimensions={svgDimensions}
+            onMouseOverCallback={datum => this.setState({hoveredBar: datum})}
+            onMouseOutCallback={datum => this.setState({hoveredBar: null})}
+          />
+        </svg>
+        { this.state.hoveredBar ?
+          <Tooltip
+            hoveredBar={this.state.hoveredBar}
+            scales={{ xScale, yScale }}
+          /> :
+          null
+        }
+      </div>
     )
   }
 }

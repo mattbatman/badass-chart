@@ -26,6 +26,8 @@ export default class Bars extends Component {
           height={height - margins.bottom - scales.yScale(datum.value)}
           width={xScale.bandwidth()}
           fill={this.colorScale(datum.value)}
+          onMouseOver={() => this.props.onMouseOverCallback(datum)}
+          onMouseOut={() => this.props.onMouseOutCallback(null)}
         />,
       )
     )
